@@ -1,0 +1,555 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>App Risk Auditor — UI Mockup</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: #e8eaf0;
+    padding: 32px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #57606a;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: -28px;
+    align-self: flex-start;
+    margin-left: calc(50% - 200px);
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 360px;
+    background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.18), 0 1px 4px rgba(0,0,0,.10);
+    overflow: hidden;
+    border: 6px solid #1a1a2e;
+    position: relative;
+  }
+  .phone::before {
+    content: '';
+    display: block;
+    width: 80px; height: 10px;
+    background: #1a1a2e;
+    border-radius: 0 0 8px 8px;
+    margin: 0 auto 0;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: #1565C0;
+    padding: 4px 16px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255,255,255,.9);
+    font-weight: 500;
+  }
+
+  /* Top App Bar */
+  .topbar {
+    background: #1565C0;
+    padding: 10px 16px 12px;
+    color: white;
+  }
+  .topbar-title { font-size: 20px; font-weight: 700; }
+  .topbar-sub { font-size: 11px; opacity: .8; margin-top: 1px; }
+  .topbar-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  .refresh-icon { font-size: 20px; opacity: .9; margin-top: 2px; }
+
+  /* Toggle row */
+  .toggle-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .toggle {
+    width: 36px; height: 20px; border-radius: 10px;
+    background: #ccc; position: relative;
+  }
+  .toggle.on { background: #1565C0; }
+  .toggle::after {
+    content: '';
+    width: 16px; height: 16px; border-radius: 50%;
+    background: white;
+    position: absolute; top: 2px; left: 2px;
+    transition: left .15s;
+  }
+  .toggle.on::after { left: 18px; }
+
+  /* Device summary */
+  .summary {
+    background: #f0f4ff;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .summary-title { font-size: 12px; font-weight: 600; color: #1f2328; margin-bottom: 8px; }
+  .band-cards { display: flex; gap: 6px; margin-bottom: 10px; }
+  .band-card {
+    flex: 1; border-radius: 6px; padding: 6px 4px;
+    text-align: center;
+  }
+  .band-card .num { font-size: 18px; font-weight: 700; }
+  .band-card .lbl { font-size: 9px; font-weight: 600; }
+  .critical-card { background: #dc2626; color: white; }
+  .high-card     { background: #fee2e2; color: #991b1b; }
+  .medium-card   { background: #e9d5ff; color: #4c1d95; }
+  .low-card      { background: #dbeafe; color: #1e40af; }
+
+  .access-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .access-chip {
+    background: white; border: 1px solid #d1d5db;
+    border-radius: 12px; padding: 2px 8px;
+    font-size: 10px; color: #374151;
+  }
+
+  /* Filter chips */
+  .filter-row {
+    display: flex; gap: 6px; padding: 8px 12px;
+    overflow-x: auto; border-bottom: 1px solid #e5e7eb;
+  }
+  .filter-chip {
+    border-radius: 16px; padding: 3px 12px;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+    border: 1px solid #d1d5db; background: white; color: #374151;
+  }
+  .filter-chip.active { background: #1565C0; color: white; border-color: #1565C0; }
+
+  /* App list */
+  .app-list { overflow-y: auto; }
+  .app-row {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; gap: 10px; align-items: flex-start;
+    cursor: pointer;
+  }
+  .app-row:hover { background: #f7f8fa; }
+  .app-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .app-meta { flex: 1; min-width: 0; }
+  .app-name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+  .app-name { font-size: 14px; font-weight: 600; color: #1f2328; }
+  .score-badge {
+    border-radius: 6px; padding: 2px 8px;
+    font-size: 11px; font-weight: 700; white-space: nowrap;
+  }
+  .score-critical { background: #dc2626; color: white; }
+  .score-high     { background: #fee2e2; color: #991b1b; }
+  .score-medium   { background: #e9d5ff; color: #4c1d95; }
+  .score-low      { background: #dbeafe; color: #1e40af; }
+  .app-reason { font-size: 11px; color: #dc2626; margin-bottom: 4px; line-height: 1.4; }
+  .app-reason.muted { color: #57606a; }
+  .app-meta-row { display: flex; gap: 8px; margin-bottom: 4px; }
+  .app-meta-item { font-size: 10px; color: #57606a; }
+  .app-meta-item.sideload { color: #dc2626; font-weight: 600; }
+  .cat-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .cat-chip {
+    background: white; border: 1px solid #d1d5db;
+    border-radius: 10px; padding: 1px 7px;
+    font-size: 9px; color: #374151;
+  }
+
+  /* ── DETAIL SCREEN ── */
+  .detail-header {
+    background: #1565C0; padding: 10px 16px 14px; color: white;
+  }
+  .back-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .back-arrow { font-size: 20px; }
+  .detail-title { font-size: 18px; font-weight: 700; }
+
+  .app-header-card {
+    background: #f0f4ff; padding: 14px;
+    display: flex; gap: 12px; align-items: flex-start;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .big-icon {
+    width: 60px; height: 60px; border-radius: 14px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .app-header-meta { flex: 1; }
+  .app-header-name { font-size: 16px; font-weight: 700; }
+  .app-header-pkg  { font-size: 10px; color: #57606a; margin-bottom: 4px; }
+  .meta-kv { font-size: 10px; color: #57606a; }
+  .meta-kv span { font-weight: 600; color: #1f2328; }
+
+  .score-panel {
+    margin: 14px; border-radius: 12px; padding: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .score-panel.critical { background: #dc2626; color: white; }
+  .score-panel.high     { background: #fee2e2; color: #991b1b; }
+  .score-number { font-size: 52px; font-weight: 800; line-height: 1; }
+  .score-label  { font-size: 11px; opacity: .8; }
+  .band-name    { font-size: 26px; font-weight: 800; text-align: right; }
+  .band-desc    { font-size: 11px; text-align: right; opacity: .85; max-width: 130px; }
+
+  .section-header {
+    font-size: 13px; font-weight: 700;
+    padding: 14px 14px 4px;
+    color: #1f2328;
+    border-bottom: 1px solid #e5e7eb;
+    margin: 0 0 2px;
+  }
+
+  .reason-row {
+    display: flex; gap: 8px; padding: 6px 14px;
+    align-items: flex-start; font-size: 12px; color: #1f2328;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .reason-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  .special-row {
+    margin: 6px 14px; border-radius: 8px;
+    padding: 10px 12px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .special-row.active { background: #fee2e2; }
+  .special-row.declared { background: #f7f8fa; border: 1px solid #e5e7eb; }
+  .dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; margin-top: 3px; }
+  .dot.red    { background: #dc2626; }
+  .dot.amber  { background: #f59e0b; }
+  .special-status { font-size: 10px; font-weight: 700; }
+  .special-status.active { color: #dc2626; }
+  .special-status.declared { color: #57606a; }
+  .special-text { font-size: 11px; color: #374151; }
+
+  .perm-category-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px 3px;
+  }
+  .cat-divider { flex: 1; height: 1px; background: #e5e7eb; }
+  .cat-label { font-size: 11px; font-weight: 600; color: #1565C0; }
+
+  .perm-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 14px;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .perm-name { font-size: 11px; font-weight: 600; }
+  .perm-full { font-size: 9px; color: #57606a; }
+  .perm-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .granted-badge {
+    border-radius: 4px; padding: 1px 6px; font-size: 9px; font-weight: 600;
+    background: #dbeafe; color: #1e40af;
+  }
+  .declared-badge {
+    border-radius: 4px; padding: 1px 6px; font-size: 9px; font-weight: 600;
+    background: #f3f4f6; color: #6b7280;
+  }
+  .prot-label { font-size: 9px; }
+  .prot-dangerous { color: #dc2626; }
+  .prot-normal    { color: #57606a; }
+  .prot-special   { color: #7c3aed; }
+
+  .action-section { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .btn-settings {
+    background: #1565C0; color: white; border: none;
+    border-radius: 24px; padding: 11px 16px;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+  }
+  .btn-uninstall {
+    background: white; color: #dc2626;
+    border: 1.5px solid #dc2626;
+    border-radius: 24px; padding: 10px 16px;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%;
+  }
+
+  .screens-label {
+    font-size: 22px; font-weight: 700; color: #1f2328; align-self: flex-start;
+    margin-left: calc(50% - 380px);
+  }
+  .screens-row {
+    display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; justify-content: center;
+  }
+  .screen-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .screen-label { font-size: 12px; font-weight: 600; color: #57606a; letter-spacing: .06em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<div class="screens-row">
+
+  
+  <div class="screen-col">
+    <div class="screen-label">Home Screen</div>
+    <div class="phone">
+      <div style="background:#1a1a2e;height:6px;border-radius:0 0 4px 4px;width:70px;margin:0 auto"></div>
+      <div class="status-bar"><span>9:41</span><span>▮▮▮ WiFi 🔋</span></div>
+
+      
+      <div class="topbar">
+        <div class="topbar-row">
+          <div>
+            <div class="topbar-title">App Risk Auditor</div>
+            <div class="topbar-sub">47 apps shown</div>
+          </div>
+          <div class="refresh-icon">↻</div>
+        </div>
+      </div>
+
+      
+      <div class="toggle-row">
+        <span style="font-size:13px">Include system apps</span>
+        <div class="toggle"></div>
+      </div>
+
+      
+      <div class="summary">
+        <div class="summary-title">Device risk summary</div>
+        <div class="band-cards">
+          <div class="band-card critical-card"><div class="num">3</div><div class="lbl">Critical</div></div>
+          <div class="band-card high-card"><div class="num">7</div><div class="lbl">High</div></div>
+          <div class="band-card medium-card"><div class="num">18</div><div class="lbl">Medium</div></div>
+          <div class="band-card low-card"><div class="num">19</div><div class="lbl">Low</div></div>
+        </div>
+        <div style="font-size:10px;color:#57606a;margin-bottom:5px">Apps holding each access type:</div>
+        <div class="access-chips">
+          <div class="access-chip">Special Access: 3</div>
+          <div class="access-chip">Location: 14</div>
+          <div class="access-chip">Camera/Mic: 11</div>
+          <div class="access-chip">Network: 38</div>
+          <div class="access-chip">SMS: 2</div>
+          <div class="access-chip">Contacts: 8</div>
+        </div>
+      </div>
+
+      
+      <div class="filter-row">
+        <div class="filter-chip active">All</div>
+        <div class="filter-chip">Critical</div>
+        <div class="filter-chip">High</div>
+        <div class="filter-chip">Medium</div>
+        <div class="filter-chip">Low</div>
+      </div>
+
+      
+      <div class="app-list">
+
+        
+        <div class="app-row">
+          <div class="app-icon" style="background:#fee2e2">📱</div>
+          <div class="app-meta">
+            <div class="app-name-row">
+              <div class="app-name">SystemHelper</div>
+              <div class="score-badge score-critical">87  Critical</div>
+            </div>
+            <div class="app-reason">Active accessibility service — can read everything on your screen, including passwords.</div>
+            <div class="app-meta-row">
+              <div class="app-meta-item sideload">⚠ Sideloaded</div>
+              <div class="app-meta-item">SDK 26</div>
+              <div class="app-meta-item">v1.0</div>
+            </div>
+            <div class="cat-chips">
+              <div class="cat-chip">Special Access</div>
+              <div class="cat-chip">SMS</div>
+              <div class="cat-chip">Network</div>
+              <div class="cat-chip">Background</div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="app-row">
+          <div class="app-icon" style="background:#e0f2fe">🔦</div>
+          <div class="app-meta">
+            <div class="app-name-row">
+              <div class="app-name">FlashLight Pro</div>
+              <div class="score-badge score-high">54  High</div>
+            </div>
+            <div class="app-reason">Can read, receive, or send SMS — this can expose one-time passwords and 2FA codes.</div>
+            <div class="app-meta-row">
+              <div class="app-meta-item sideload">⚠ Sideloaded</div>
+              <div class="app-meta-item">SDK 28</div>
+              <div class="app-meta-item">v3.2</div>
+            </div>
+            <div class="cat-chips">
+              <div class="cat-chip">SMS</div>
+              <div class="cat-chip">Location</div>
+              <div class="cat-chip">Network</div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="app-row">
+          <div class="app-icon" style="background:#f0fdf4">💬</div>
+          <div class="app-meta">
+            <div class="app-name-row">
+              <div class="app-name">WhatsApp</div>
+              <div class="score-badge score-medium">42  Medium</div>
+            </div>
+            <div class="app-reason muted">Can access your contacts and call history — your social network is exposed.</div>
+            <div class="app-meta-row">
+              <div class="app-meta-item" style="color:#1565C0;font-weight:600">Play Store</div>
+              <div class="app-meta-item">SDK 35</div>
+              <div class="app-meta-item">v24.1</div>
+            </div>
+            <div class="cat-chips">
+              <div class="cat-chip">Contacts/Calls</div>
+              <div class="cat-chip">Camera/Mic</div>
+              <div class="cat-chip">Network</div>
+              <div class="cat-chip">Storage</div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="app-row">
+          <div class="app-icon" style="background:#fef9c3">📝</div>
+          <div class="app-meta">
+            <div class="app-name-row">
+              <div class="app-name">Notes</div>
+              <div class="score-badge score-low">4  Low</div>
+            </div>
+            <div class="app-meta-row">
+              <div class="app-meta-item" style="color:#1565C0;font-weight:600">Play Store</div>
+              <div class="app-meta-item">SDK 34</div>
+              <div class="app-meta-item">v2.1</div>
+            </div>
+            <div class="cat-chips">
+              <div class="cat-chip">Network</div>
+              <div class="cat-chip">Storage</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="screen-col">
+    <div class="screen-label">Detail Screen</div>
+    <div class="phone">
+      <div style="background:#1a1a2e;height:6px;border-radius:0 0 4px 4px;width:70px;margin:0 auto"></div>
+      <div class="status-bar"><span>9:41</span><span>▮▮▮ WiFi 🔋</span></div>
+
+      
+      <div class="detail-header">
+        <div class="back-row">
+          <div class="back-arrow">←</div>
+          <div class="detail-title">SystemHelper</div>
+        </div>
+      </div>
+
+      <div style="overflow-y:auto;max-height:680px">
+
+        
+        <div class="app-header-card">
+          <div class="big-icon" style="background:#fee2e2">📱</div>
+          <div class="app-header-meta">
+            <div class="app-header-name">SystemHelper</div>
+            <div class="app-header-pkg">com.evil.systemhelper</div>
+            <div class="meta-kv">Version: <span>1.0</span></div>
+            <div class="meta-kv">Installed: <span>Mar 3, 2025</span></div>
+            <div class="meta-kv">Source: <span style="color:#dc2626">⚠ Sideloaded</span></div>
+            <div class="meta-kv">Target SDK: <span>API 26</span></div>
+          </div>
+        </div>
+
+        
+        <div class="score-panel critical">
+          <div>
+            <div style="font-size:11px;opacity:.8">Risk Score</div>
+            <div class="score-number">87</div>
+            <div class="score-label">out of 100</div>
+          </div>
+          <div>
+            <div class="band-name">Critical</div>
+            <div class="band-desc">Dangerous access combination — review now.</div>
+          </div>
+        </div>
+
+        
+        <div class="section-header">Why is this app flagged?</div>
+        <div class="reason-row"><div class="reason-icon">ℹ️</div><div>Active accessibility service — can read everything on your screen, including passwords and messages.</div></div>
+        <div class="reason-row"><div class="reason-icon">ℹ️</div><div>Can draw over other apps — could display a fake login screen on top of your banking app.</div></div>
+        <div class="reason-row"><div class="reason-icon">ℹ️</div><div>⚠ SMS + internet + starts on boot + sideloaded — classic spyware pattern.</div></div>
+        <div class="reason-row"><div class="reason-icon">ℹ️</div><div>Can read, receive, or send SMS — exposes one-time passwords and 2FA codes.</div></div>
+        <div class="reason-row"><div class="reason-icon">ℹ️</div><div>This app was sideloaded (not from the Play Store), which increases risk.</div></div>
+
+        
+        <div class="section-header">Special access</div>
+        <div class="special-row active">
+          <div class="dot red"></div>
+          <div>
+            <div class="special-status active">ACTIVE</div>
+            <div class="special-text">Accessibility service ACTIVE — can read all screen content</div>
+          </div>
+        </div>
+        <div class="special-row active">
+          <div class="dot red"></div>
+          <div>
+            <div class="special-status active">ACTIVE</div>
+            <div class="special-text">Can draw over other apps — could hide phishing screens</div>
+          </div>
+        </div>
+        <div class="special-row declared">
+          <div class="dot amber"></div>
+          <div>
+            <div class="special-status declared">Declared only</div>
+            <div class="special-text">Install-packages declared (not currently allowed)</div>
+          </div>
+        </div>
+
+        
+        <div class="section-header">Permissions by category</div>
+
+        <div class="perm-category-header"><div class="cat-divider"></div><div class="cat-label">SMS</div><div class="cat-divider"></div></div>
+        <div class="perm-row">
+          <div><div class="perm-name">READ_SMS</div><div class="perm-full">android.permission.READ_SMS</div></div>
+          <div class="perm-badges"><div class="granted-badge">Granted</div><div class="prot-label prot-dangerous">dangerous</div></div>
+        </div>
+        <div class="perm-row">
+          <div><div class="perm-name">RECEIVE_SMS</div><div class="perm-full">android.permission.RECEIVE_SMS</div></div>
+          <div class="perm-badges"><div class="granted-badge">Granted</div><div class="prot-label prot-dangerous">dangerous</div></div>
+        </div>
+
+        <div class="perm-category-header"><div class="cat-divider"></div><div class="cat-label">Network</div><div class="cat-divider"></div></div>
+        <div class="perm-row">
+          <div><div class="perm-name">INTERNET</div><div class="perm-full">android.permission.INTERNET</div></div>
+          <div class="perm-badges"><div class="granted-badge">Granted</div><div class="prot-label prot-normal">normal</div></div>
+        </div>
+
+        <div class="perm-category-header"><div class="cat-divider"></div><div class="cat-label">Background</div><div class="cat-divider"></div></div>
+        <div class="perm-row">
+          <div><div class="perm-name">RECEIVE_BOOT_COMPLETED</div><div class="perm-full">android.permission.RECEIVE_BOOT_COMPLETED</div></div>
+          <div class="perm-badges"><div class="granted-badge">Granted</div><div class="prot-label prot-normal">normal</div></div>
+        </div>
+
+        
+        <div class="section-header">What can I do?</div>
+        <div class="action-section">
+          <button class="btn-settings">⚙ Open App Settings</button>
+          <button class="btn-uninstall">🗑 Uninstall App</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid #e5e7eb;text-align:center;font-size:12px;color:#57606a;width:100%;max-width:760px">Made with IBM Bob</footer>
+</body>
+</html>

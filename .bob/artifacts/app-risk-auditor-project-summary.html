@@ -1,0 +1,141 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>App Risk Auditor — Project Summary</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; background: #ffffff; color: #1f2328; max-width: 760px; margin: 0 auto; padding: 32px 24px 48px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #57606a; font-size: 13px; margin-bottom: 24px; }
+  h2 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; color: #1f2328; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }
+  h3 { font-size: 13px; font-weight: 600; margin: 12px 0 4px; color: #3b82d4; }
+  p { margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+  th { background: #f7f8fa; text-align: left; padding: 6px 10px; border: 1px solid #e5e7eb; font-weight: 600; }
+  td { padding: 5px 10px; border: 1px solid #e5e7eb; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f8fa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-right: 4px; }
+  .low      { background: #dbeafe; color: #1e40af; }
+  .medium   { background: #e9d5ff; color: #4c1d95; }
+  .high     { background: #fee2e2; color: #991b1b; }
+  .critical { background: #dc2626; color: #ffffff; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .card { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 14px; }
+  .card h3 { margin-top: 0; color: #1f2328; font-size: 13px; }
+  ul { padding-left: 18px; margin-bottom: 8px; }
+  li { margin-bottom: 3px; }
+  code { font-family: "SFMono-Regular", Consolas, monospace; background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 3px; padding: 1px 5px; font-size: 12px; }
+  .highlight { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px 12px; margin: 8px 0; border-radius: 0 4px 4px 0; font-size: 13px; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+</style>
+</head>
+<body>
+
+<h1>📱 App Risk Auditor</h1>
+<p class="subtitle">Hackathon PS-01 · Mobile Security Track · Team CTRL-ALT-ELITE</p>
+
+<div class="highlight">
+  Answers three questions every phone user should ask: <strong>Which apps can do the most harm? Why? What do I do about it — right now?</strong>
+</div>
+
+<h2>What it does</h2>
+<p>A fully on-device Android app that scans every installed package, extracts permissions and special OS-level access, groups them into 9 categories, and assigns each app a <strong>0–100 risk score</strong> with plain-language reasons — no jargon, no server, no root needed.</p>
+
+<h2>Risk Bands</h2>
+<table>
+  <tr><th>Score</th><th>Band</th><th>Meaning</th></tr>
+  <tr><td>0–24</td><td><span class="badge low">Low</span></td><td>Normal app; no sensitive access of concern</td></tr>
+  <tr><td>25–49</td><td><span class="badge medium">Medium</span></td><td>Some permissions worth knowing about</td></tr>
+  <tr><td>50–74</td><td><span class="badge high">High</span></td><td>Significant sensitive access; review recommended</td></tr>
+  <tr><td>75–100</td><td><span class="badge critical">Critical</span></td><td>Dangerous capability combination — act immediately</td></tr>
+</table>
+
+<h2>Scoring Weights</h2>
+<table>
+  <tr><th>Category</th><th>Granted weight</th><th>Key permissions</th></tr>
+  <tr><td>Special Access — active</td><td><strong>20 / item</strong></td><td>Accessibility, Device Admin, Notification Listener, Overlay, Install Packages, Usage Access</td></tr>
+  <tr><td>Special Access — declared</td><td><strong>8 / item</strong></td><td>Same, but not currently enabled</td></tr>
+  <tr><td>SMS</td><td>15</td><td>READ_SMS, RECEIVE_SMS, SEND_SMS</td></tr>
+  <tr><td>Contacts &amp; Call Logs</td><td>10</td><td>READ_CONTACTS, READ_CALL_LOG</td></tr>
+  <tr><td>Camera &amp; Mic</td><td>10</td><td>CAMERA, RECORD_AUDIO</td></tr>
+  <tr><td>Location</td><td>8 (+5 background)</td><td>ACCESS_FINE_LOCATION, ACCESS_BACKGROUND_LOCATION</td></tr>
+  <tr><td>Phone &amp; Identity</td><td>6</td><td>READ_PHONE_STATE, CALL_PHONE</td></tr>
+  <tr><td>Storage</td><td>6 (+4 MANAGE)</td><td>READ_MEDIA_*, MANAGE_EXTERNAL_STORAGE</td></tr>
+  <tr><td>Background &amp; Persistence</td><td>4</td><td>RECEIVE_BOOT_COMPLETED, FOREGROUND_SERVICE</td></tr>
+  <tr><td>Network</td><td>1</td><td>INTERNET</td></tr>
+</table>
+<p style="font-size:12px;color:#57606a">Declared-but-not-granted permissions count at 30% of full weight. Score is capped at 100.</p>
+
+<h2>Combination Rule Bonuses</h2>
+<table>
+  <tr><th>Rule</th><th>Condition</th><th>Bonus</th></tr>
+  <tr><td>SMS Exfiltration</td><td>READ_SMS + INTERNET + RECEIVE_BOOT_COMPLETED + Sideloaded</td><td>+15</td></tr>
+  <tr><td>Screen Hijack</td><td>Active Accessibility Service + Overlay access</td><td>+12</td></tr>
+  <tr><td>Rogue Admin</td><td>Active Device Admin + non-Play-Store source</td><td>+10</td></tr>
+</table>
+
+<h2>Architecture</h2>
+<div class="grid">
+  <div class="card">
+    <h3>Tech stack</h3>
+    <ul>
+      <li>Kotlin + Jetpack Compose + Material 3</li>
+      <li>MVVM · ViewModel · StateFlow</li>
+      <li>Single module · minSdk 26 · targetSdk 35</li>
+      <li>Standard Android SDK only — no extra libs</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Key files</h3>
+    <ul>
+      <li><code>RiskEngine.kt</code> — pure Kotlin scorer</li>
+      <li><code>SpecialAccessDetector.kt</code> — 6 access types</li>
+      <li><code>PermissionCategorizer.kt</code> — 80+ permission map</li>
+      <li><code>AppDetailScreen.kt</code> — full detail UI</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Privacy guarantees</h3>
+    <ul>
+      <li>100% on-device · zero network calls</li>
+      <li>No INTERNET permission in manifest</li>
+      <li>No root, no ADB at runtime</li>
+      <li>No user data ever leaves the device</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Special access detected</h3>
+    <ul>
+      <li>Accessibility services (active)</li>
+      <li>Device administrators (active)</li>
+      <li>Notification listeners (active)</li>
+      <li>Overlay / draw-over-apps</li>
+      <li>Install packages access</li>
+      <li>Usage stats access</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Build &amp; Run</h2>
+<table>
+  <tr><th>Action</th><th>Command</th></tr>
+  <tr><td>Build debug APK</td><td><code>./gradlew assembleDebug</code></td></tr>
+  <tr><td>Install on device</td><td><code>./gradlew installDebug</code></td></tr>
+  <tr><td>Run unit tests</td><td><code>./gradlew test</code></td></tr>
+  <tr><td>APK location</td><td><code>app/build/outputs/apk/debug/app-debug.apk</code></td></tr>
+  <tr><td>Android Studio</td><td>File → Open → folder → Shift+F10</td></tr>
+</table>
+
+<h2>3-Minute Demo Flow</h2>
+<ol style="padding-left:18px">
+  <li><strong>Home screen (30 sec)</strong> — Device summary header: 4 band-count cards (Critical/High/Medium/Low) + scrollable access-type chips (Location: 12, Network: 34…). Show filter chips → tap "Critical".</li>
+  <li><strong>Top Critical app (60 sec)</strong> — Tap it. Score panel (e.g. 87 · Critical). Read 3 plain-language reasons aloud. Highlight the combination rule reason if present.</li>
+  <li><strong>Action buttons (30 sec)</strong> — Scroll to bottom. Tap "Open App Settings" → system settings opens. Return. Show "Uninstall App" button.</li>
+  <li><strong>Combination rule (30 sec)</strong> — Show the SMS + internet + boot + sideloaded warning, or switch to the High filter and show multiple flagged apps.</li>
+</ol>
+
+<footer>Made with IBM Bob</footer>
+</body>
+</html>

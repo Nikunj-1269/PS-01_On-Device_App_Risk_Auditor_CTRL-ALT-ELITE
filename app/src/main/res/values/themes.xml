@@ -1,0 +1,4 @@
+<resources>
+    <!-- Base application theme (no-op; Compose uses AppRiskAuditorTheme) -->
+    <style name="Theme.AppRiskAuditor" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
